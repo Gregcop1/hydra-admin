@@ -3,6 +3,7 @@ import {
   RouteConfig,
   ROUTER_DIRECTIVES
 } from 'angular2/router';
+import {MATERIAL_DIRECTIVES} from 'ng2-material/all';
 import {EntrypointService} from '../../services/entrypoints/entrypoints';
 
 
@@ -11,7 +12,7 @@ import {EntrypointService} from '../../services/entrypoints/entrypoints';
   templateUrl: './app/components/app/app.html',
   styleUrls: ['./app/components/app/app.css'],
   encapsulation: ViewEncapsulation.None,
-  directives: [ROUTER_DIRECTIVES]
+  directives: [ROUTER_DIRECTIVES, MATERIAL_DIRECTIVES]
 })
 @RouteConfig([
   //{ path: '/', component: HomeCmp, as: 'Home' },
