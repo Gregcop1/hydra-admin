@@ -5,14 +5,14 @@ import {
 } from 'angular2/router';
 import {MATERIAL_DIRECTIVES} from 'ng2-material/all';
 import {EntrypointService} from '../../services/entrypoints/entrypoints';
-
+import {HeaderCmp} from '../header/header';
+import {SideBarCmp} from '../sidebar/sidebar';
 
 @Component({
   selector: 'app',
   templateUrl: './app/components/app/app.html',
-  styleUrls: ['./app/components/app/app.css'],
   encapsulation: ViewEncapsulation.None,
-  directives: [ROUTER_DIRECTIVES, MATERIAL_DIRECTIVES]
+  directives: [ROUTER_DIRECTIVES, MATERIAL_DIRECTIVES, HeaderCmp, SideBarCmp]
 })
 @RouteConfig([
   //{ path: '/', component: HomeCmp, as: 'Home' },

@@ -1,6 +1,15 @@
-<section class="sample-app-content">
-  <nav>
-  </nav>
-
-  <router-outlet></router-outlet>
-</section>
+<div layout="column" layout-fill>
+  <header></header>
+  <div class="main-content" flex>
+    <div style="display: block; position: relative;">
+      <div layout="row">
+        <sidebar></sidebar>
+        <md-content flex layout-padding>
+          <div layout="column" layout-fill layout-align="top center">
+            <router-outlet></router-outlet>
+          </div>
+        </md-content>
+      </div>
+    </div>
+  </div>
+</div>
