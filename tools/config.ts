@@ -62,7 +62,8 @@ export const DEV_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencie
   { src: 'angular2/bundles/angular2.js', inject: 'libs', dest: JS_DEST },
   { src: 'angular2/bundles/router.js', inject: 'libs', dest: JS_DEST },
   { src: 'angular2/bundles/http.js', inject: 'libs', dest: JS_DEST },
-  { src: 'bootstrap/dist/css/bootstrap.css', inject: true, dest: CSS_DEST }
+  { src: 'bootstrap/dist/css/bootstrap.css', inject: true, dest: CSS_DEST },
+  { src: 'lodash/lodash.js', inject: true, dest: JS_DEST }
 ]);
 
 export const PROD_NPM_DEPENDENCIES: InjectableDependency[] = normalizeDependencies([
@@ -90,6 +91,7 @@ const SYSTEM_CONFIG_DEV = {
     [BOOTSTRAP_MODULE]: `${APP_BASE}${BOOTSTRAP_MODULE}`,
     'angular2/*': `${APP_BASE}angular2/*`,
     'rxjs/*': `${APP_BASE}rxjs/*`,
+    'lodash': `${APP_BASE}node_modules/lodash/lodash.js`,
     '*': `${APP_BASE}node_modules/*`
   },
   packages: {
