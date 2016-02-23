@@ -1,0 +1,18 @@
+md-sidenav {
+
+  .model-navigation {
+    margin: 0; padding: 0;
+
+    .model-navigation__item { margin: 0; padding: 0; list-style-type: none;
+      font-size: 1.4em;
+
+      &--active a { background-color: md-color($md-primary, 300); }
+    }
+
+    .model-navigation__link { display: block; padding: 8px 16px; transition: all 200ms linear;
+      color: md-color($md-primary, 600); text-decoration: none;
+
+      &:hover { background-color: md-color($md-primary, 200); }
+    }
+  }
+}

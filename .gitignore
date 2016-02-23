@@ -36,6 +36,7 @@ build/Release
 
 dist
 dev
+src/assets/main.css*
 docs
 lib
 test
