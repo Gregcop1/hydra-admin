@@ -4,6 +4,7 @@ import { it,
     inject,
     fakeAsync,
     beforeEachProviders,
+    beforeEach,
     tick,
 } from 'angular2/testing';
 import {MockBackend} from 'angular2/http/testing';
@@ -36,7 +37,7 @@ export function main() {
                     }
                 }),
                 provide(Http, {
-                    useFactory: (backend:ConnectionBackend, defaultOptions:BaseRequestOptions) => {
+                    useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
                         return new Http(backend, defaultOptions);
                     }, deps: [MockBackend, BaseRequestOptions]
                 })
@@ -54,7 +55,6 @@ export function main() {
 
         it('should ask API for entrypoints',
             inject([EntrypointService, ConfigService, MockBackend], fakeAsync((entrypointService, configService, mockBackend) => {
-                let res;
                 mockBackend.connections.subscribe(c => {
                     expect(c.request.url).toBe('http://localhost:8000');
                     let response = new ResponseOptions({
@@ -63,18 +63,18 @@ export function main() {
                     c.mockRespond(new Response(response));
                 });
 
-                spyOn(entrypointService, '_getEntryPointsList');
+                spyOn(entrypointService, '_filterEntryPoints');
 
-                // two calls to check the "singleton like" Observable
-                entrypointService.getEntryPoints().subscribe(_res => res = _res);
+                entrypointService.getEntryPoints();
                 tick();
-                expect(entrypointService._getEntryPointsList).toHaveBeenCalledWith(defaultResponse);
+                expect(entrypointService._filterEntryPoints).toHaveBeenCalled();
+                expect(entrypointService._filterEntryPoints).toHaveBeenCalledWith(defaultResponse, 0);
             }))
         );
 
         it('should filter entrypoints',
             inject([EntrypointService], (entrypointService) => {
-                let filteredResults = entrypointService._getEntryPointsList(defaultResponse);
+                let filteredResults = entrypointService._filterEntryPoints(defaultResponse);
                 expect(filteredResults['@context']).toBeUndefined();
                 expect(filteredResults['@id']).toBeUndefined();
                 expect(filteredResults['@type']).toBeUndefined();

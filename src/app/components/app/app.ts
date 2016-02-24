@@ -21,7 +21,7 @@ export class AppCmp implements OnInit {
   constructor(private entrypointService: EntrypointService) {}
 
   ngOnInit() {
-    this.entrypointService.getEntryPoints()
-        .subscribe(null, (error) => console.error(`API's url is unreachable.`, error));
+    //this.entrypointService.getEntryPoints()
+    //    .subscribe(null, (error) => console.error(`API's url is unreachable.`, error));
   }
 }

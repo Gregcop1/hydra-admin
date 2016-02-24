@@ -9,13 +9,16 @@ import {MATERIAL_DIRECTIVES, Media, SidenavService} from 'ng2-material/all';
 export class HeaderCmp {
     constructor(public sidenav: SidenavService) {}
 
-    toggleSideBarDisplay(name) {
+    /**
+     * Toggle display of the sideNav depending on the size of the screen
+     */
+    toggleSideBarDisplay() {
         if (Media.hasMedia('sm')) {
-            let sideNav = this.sidenav.find(name);
+            let sideNav = this.sidenav.find('left');
             if (sideNav.visible) {
-                sideNav.hide(name);
+                sideNav.hide();
             } else {
-                sideNav.show(name);
+                sideNav.show();
             }
         }
     }

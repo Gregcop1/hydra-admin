@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component, OnInit} from 'angular2/core';
 import {CORE_DIRECTIVES} from 'angular2/common';
 import {MATERIAL_DIRECTIVES, Media} from 'ng2-material/all';
 import {EntrypointService} from '../../services/entrypoints/entrypoints';
@@ -8,16 +8,18 @@ import {EntrypointService} from '../../services/entrypoints/entrypoints';
     templateUrl: './app/components/sidebar/sidebar.html',
     directives: [CORE_DIRECTIVES, MATERIAL_DIRECTIVES]
 })
-export class SideBarCmp {
+export class SideBarCmp implements OnInit {
 
     navigationItems: Array<any> = [];
 
-    constructor(private entrypointService: EntrypointService) {
-        this._getNavigationItems();
-    }
+    constructor(private entrypointService: EntrypointService) {}
 
     hasMedia(breakSize: string): boolean {
         return Media.hasMedia(breakSize);
+    }
+
+    ngOnInit(): void {
+        this._getNavigationItems();
     }
 
     private _getNavigationItems(): void {
