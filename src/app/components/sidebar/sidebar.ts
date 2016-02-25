@@ -1,7 +1,7 @@
 import {Component, OnInit} from 'angular2/core';
 import {CORE_DIRECTIVES} from 'angular2/common';
 import {MATERIAL_DIRECTIVES, Media} from 'ng2-material/all';
-import {EntrypointService} from '../../services/entrypoints/entrypoints';
+import {SchemaService} from '../../services/schema/schema';
 
 @Component({
     selector: 'sidebar',
@@ -10,9 +10,9 @@ import {EntrypointService} from '../../services/entrypoints/entrypoints';
 })
 export class SideBarCmp implements OnInit {
 
-    navigationItems: Array<any> = [];
+    models: Array<any> = [];
 
-    constructor(private entrypointService: EntrypointService) {}
+    constructor(private schemaService: SchemaService) {}
 
     hasMedia(breakSize: string): boolean {
         return Media.hasMedia(breakSize);
@@ -23,13 +23,7 @@ export class SideBarCmp implements OnInit {
     }
 
     private _getNavigationItems(): void {
-        this.entrypointService.getEntryPoints().subscribe((items: any) => {
-            for (let key in items) {
-                this.navigationItems.push({
-                    label: key,
-                    link: items[key]
-                });
-            }
-        });
+        this.schemaService.schema$.subscribe(schema => this.models = schema.models );
+        this.schemaService.getSchema();
     }
 }

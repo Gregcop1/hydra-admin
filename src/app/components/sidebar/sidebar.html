@@ -2,8 +2,8 @@
     <md-sidenav name="left" [style]="hasMedia('sm') ? 'over' : 'side'">
         <md-content layout-padding>
             <ul class="model-navigation">
-                <li *ngFor="#item of navigationItems" class="model-navigation__item">
-                    <a href="#" class="model-navigation__link">{{item.label}}</a>
+                <li *ngFor="#model of models" class="model-navigation__item">
+                    <a href="#" class="model-navigation__link">{{model.title}}</a>
                 </li>
             </ul>
         </md-content>
