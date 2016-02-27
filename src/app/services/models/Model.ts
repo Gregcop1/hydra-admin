@@ -4,6 +4,7 @@ import {Property} from './Property';
 export class Model {
 
     public title: string;
+    public title: string;
     public description: string;
     public properties: Array<Property>;
     public operations: Array<string>;
@@ -16,6 +17,14 @@ export class Model {
         }
     }
 
+    /**
+     * Extract properties from the a Model's schema
+     *
+     * @param properties
+     *
+     * @returns {Array<Property>}
+     * @private
+     */
     _getProperties(properties) {
         return _.map(properties, (property) => new Property(property));
     }

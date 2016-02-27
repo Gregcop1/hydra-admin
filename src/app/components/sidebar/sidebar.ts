@@ -14,16 +14,30 @@ export class SideBarCmp implements OnInit {
 
     constructor(private schemaService: SchemaService) {}
 
+    /**
+     * Check for media size
+     *
+     * @param breakSize
+     *
+     * @returns {boolean}
+     */
     hasMedia(breakSize: string): boolean {
         return Media.hasMedia(breakSize);
     }
 
+    /**
+     * Init services
+     */
     ngOnInit(): void {
         this._getNavigationItems();
     }
 
-    private _getNavigationItems(): void {
+    /**
+     * Get navigation's items
+     *
+     * @private
+     */
+    _getNavigationItems(): void {
         this.schemaService.schema$.subscribe(schema => this.models = schema.models );
-        this.schemaService.getSchema();
     }
 }

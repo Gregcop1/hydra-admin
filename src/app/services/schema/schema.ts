@@ -10,7 +10,6 @@ import {Model} from '../models/Model';
 @Injectable()
 export class SchemaService {
 
-    title: string;
     schema$: Observable<any>;
     _schemaObserver: any;
     _schema: any;
@@ -23,6 +22,7 @@ export class SchemaService {
             title: {},
             models: []
         };
+        this.getSchema();
     }
 
     /**
@@ -45,9 +45,10 @@ export class SchemaService {
     /**
      * Get the title of the schema
      *
-     * @param {any} datas
+     * @param {Response} datas
      *
      * @returns {string}
+     * @private
      */
     _getSchemaTitle(datas: any): string {
         return datas['hydra:title'];
@@ -61,7 +62,7 @@ export class SchemaService {
      * @returns {Array}
      * @private
      */
-    private _populateModels(datas: Response): Array<Model> {
+    _populateModels(datas: Response): Array<Model> {
         return _.map(this._cleanModlesList(datas['hydra:supportedClass']), this._populateModel);
     }
 
@@ -73,7 +74,7 @@ export class SchemaService {
      * @returns {Array<any>}
      * @private
      */
-    private _cleanModlesList(supportedClasses: Array<any>): Array<any> {
+    _cleanModlesList(supportedClasses: Array<any>): Array<any> {
         return supportedClasses.slice(0, -3);
     }
 
@@ -85,7 +86,7 @@ export class SchemaService {
      * @returns {Model}
      * @private
      */
-    private _populateModel(model: any): Model {
+    _populateModel(model: any): Model {
         return new Model(model);
     }
 }
