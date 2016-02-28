@@ -63,12 +63,16 @@ export function main() {
                     c.mockRespond(new Response(response));
                 });
 
-                spyOn(entrypointService, '_filterEntryPoints');
+                spyOn(entrypointService, '_filterEntryPoints')
+                    .and.returnValue(defaultResponse);
+                spyOn(entrypointService, '_updateEntryPointsObserver');
 
                 entrypointService.getEntryPoints();
                 tick();
                 expect(entrypointService._filterEntryPoints).toHaveBeenCalled();
                 expect(entrypointService._filterEntryPoints).toHaveBeenCalledWith(defaultResponse, 0);
+                expect(entrypointService._updateEntryPointsObserver).toHaveBeenCalled();
+                expect(entrypointService._updateEntryPointsObserver).toHaveBeenCalledWith(defaultResponse);
             }))
         );
 

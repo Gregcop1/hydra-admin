@@ -38,6 +38,7 @@ export class SideBarCmp implements OnInit {
      * @private
      */
     _getNavigationItems(): void {
-        this.schemaService.schema$.subscribe(schema => this.models = schema.models );
+        this.schemaService.schema$.subscribe(schema => this.models = schema.models);
+        this.schemaService.getSchema();
     }
 }

@@ -16,19 +16,20 @@ import {
     Response,
     ResponseOptions
 } from 'angular2/http';
-import {ModelService} from './models';
 import {ConfigService} from '../config/config';
+import {SchemaService} from './schema';
+import {Model} from '../models/Model';
 
 export function main() {
 
-    describe('Model service', () => {
+    describe('Schema service', () => {
         let defaultResponse: any;
 
         beforeEachProviders(() => {
             return [
                 BaseRequestOptions,
                 MockBackend,
-                ModelService,
+                SchemaService,
                 provide(ConfigService, {
                     useValue: {
                         api: {
@@ -116,8 +117,8 @@ export function main() {
             };
         });
 
-        it('should ask API for models',
-            inject([ModelService, ConfigService, MockBackend], fakeAsync((modelService, configService, mockBackend) => {
+        it('should ask API for schema',
+            inject([SchemaService, ConfigService, MockBackend], fakeAsync((schemaService, configService, mockBackend) => {
                 mockBackend.connections.subscribe(c => {
                     expect(c.request.url).toBe('http://localhost:8000/apidoc');
                     let response = new ResponseOptions({
@@ -126,22 +127,86 @@ export function main() {
                     c.mockRespond(new Response(response));
                 });
 
-                spyOn(modelService, '_filterEntryPoints');
-
-                modelService.getEntryPoints();
+                spyOn(schemaService, '_updateSchemaObserver');
+                schemaService.getSchema();
                 tick();
-                expect(modelService._filterEntryPoints).toHaveBeenCalled();
-                expect(modelService._filterEntryPoints).toHaveBeenCalledWith(defaultResponse, 0);
+                expect(schemaService._updateSchemaObserver).toHaveBeenCalled();
+                expect(schemaService._updateSchemaObserver).toHaveBeenCalledWith(defaultResponse);
             }))
         );
 
-        it('should filter entrypoints',
-            inject([EntrypointService], (entrypointService) => {
-                let filteredResults = entrypointService._filterEntryPoints(defaultResponse);
-                expect(filteredResults['@context']).toBeUndefined();
-                expect(filteredResults['@id']).toBeUndefined();
-                expect(filteredResults['@type']).toBeUndefined();
-                expect(filteredResults['person']).toEqual('/people');
+        it('should update observer',
+            inject([SchemaService], (schemaService) => {
+                spyOn(schemaService, '_getSchemaTitle');
+                spyOn(schemaService, '_populateModels');
+
+                schemaService._updateSchemaObserver(defaultResponse);
+
+                expect(schemaService._getSchemaTitle).toHaveBeenCalled();
+                expect(schemaService._getSchemaTitle).toHaveBeenCalledWith(defaultResponse);
+                expect(schemaService._populateModels).toHaveBeenCalled();
+                expect(schemaService._populateModels).toHaveBeenCalledWith(defaultResponse);
+            })
+        );
+
+        it('should get title',
+            inject([SchemaService], (schemaService) => {
+                let title: string = schemaService._getSchemaTitle(defaultResponse);
+                expect(title).toEqual('Hydra API Test');
+            })
+        );
+
+        it('should populate the models',
+            inject([SchemaService], (schemaService) => {
+                let fullModels: Array<string> = [
+                        'Person',
+                        'Organization',
+                        'The API entrypoint',
+                        'A constraint violation',
+                        'A constraint violation list'
+                    ],
+                    schema: any = defaultResponse = {
+                        'hydra:supportedClass': fullModels
+                    };
+
+                spyOn(schemaService, '_cleanModelsList')
+                    .and.returnValue(['Person', 'Organization']);
+
+                spyOn(schemaService, '_populateModel')
+                    .and.returnValue(['Person', 'Organization']);
+
+                schemaService._populateModels(schema);
+
+                expect(schemaService._cleanModelsList).toHaveBeenCalled();
+                expect(schemaService._cleanModelsList).toHaveBeenCalledWith(fullModels);
+
+                expect(schemaService._populateModel).toHaveBeenCalled();
+                expect(schemaService._populateModel.calls.count()).toEqual(2);
+            })
+        );
+
+        it('should clean the list of model from polluted datas',
+            inject([SchemaService], (schemaService) => {
+                let models: Array<string> = [
+                        'Person',
+                        'Organization',
+                        'The API entrypoint',
+                        'A constraint violation',
+                        'A constraint violation list'
+                    ];
+
+                let cleanedModels = schemaService._cleanModelsList(models);
+
+                expect(cleanedModels).toEqual(['Person', 'Organization']);
+            })
+        );
+
+        it('should populate model',
+            inject([SchemaService], (schemaService) => {
+                let schemaModel = { 'hydra:title': 'Person'},
+                    model = schemaService._populateModel(schemaModel);
+
+                expect(model).toBeAnInstanceOf(Model);
             })
         );
     });

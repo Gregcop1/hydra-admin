@@ -5,7 +5,7 @@ export class Property {
     public readable: boolean;
     public writable: boolean;
 
-    constructor(datas) {
+    constructor(datas: any = {}) {
         if(datas) {
             this.label = datas['hydra:title'];
             this.type = datas['hydra:property']['@type'];

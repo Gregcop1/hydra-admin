@@ -4,12 +4,11 @@ import {Property} from './Property';
 export class Model {
 
     public title: string;
-    public title: string;
     public description: string;
     public properties: Array<Property>;
     public operations: Array<string>;
 
-    constructor(datas: any) {
+    constructor(datas: any = {}) {
         if (datas) {
             this.title = datas['hydra:title'];
             this.description = datas['hydra:description'];

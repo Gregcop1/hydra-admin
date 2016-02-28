@@ -22,24 +22,35 @@ export class SchemaService {
             title: {},
             models: []
         };
-        this.getSchema();
     }
 
     /**
      * Get schema of the API
      */
-    getSchema() {
+    getSchema(): void {
         let request: string = [this._config.api.url, 'apidoc'].join('/');
         this._http.get(request)
             .map((data) => data.json())
-            .subscribe((datas) => {
-                // update the store
-                this._schema.title = this._getSchemaTitle(datas);
-                this._schema.models = this._populateModels(datas);
-                // push data to subscribers
-                this._schemaObserver.next(this._schema);
-            },
-                (error) => console.error('Could not reach API for request', request));
+            .subscribe(
+                (datas) => this._updateSchemaObserver(datas),
+                (error) => console.error(`Could not reach API for request: ${request}.`, error)
+            );
+    }
+
+    /**
+     * Update schema's observer
+     *
+     * @param datas
+     * @private
+     */
+    _updateSchemaObserver(datas: Response): void {
+        // update the store
+        this._schema.title = this._getSchemaTitle(datas);
+        this._schema.models = this._populateModels(datas);
+        // push data to subscribers
+        if (this._schemaObserver) {
+            this._schemaObserver.next(this._schema);
+        }
     }
 
     /**
@@ -63,7 +74,7 @@ export class SchemaService {
      * @private
      */
     _populateModels(datas: Response): Array<Model> {
-        return _.map(this._cleanModlesList(datas['hydra:supportedClass']), this._populateModel);
+        return _.map(this._cleanModelsList(datas['hydra:supportedClass']), this._populateModel);
     }
 
     /**
@@ -74,7 +85,7 @@ export class SchemaService {
      * @returns {Array<any>}
      * @private
      */
-    _cleanModlesList(supportedClasses: Array<any>): Array<any> {
+    _cleanModelsList(supportedClasses: Array<any>): Array<any> {
         return supportedClasses.slice(0, -3);
     }
 
