@@ -1,33 +1,44 @@
-import {Component} from 'angular2/core';
+import {Component, OnInit} from 'angular2/core';
 import {CORE_DIRECTIVES} from 'angular2/common';
 import {MATERIAL_DIRECTIVES, Media} from 'ng2-material/all';
-import {EntrypointService} from '../../services/entrypoints/entrypoints';
+import {SchemaService} from '../../services/schema/schema';
 
 @Component({
     selector: 'sidebar',
     templateUrl: './app/components/sidebar/sidebar.html',
     directives: [CORE_DIRECTIVES, MATERIAL_DIRECTIVES]
 })
-export class SideBarCmp {
+export class SideBarCmp implements OnInit {
 
-    navigationItems: Array<any> = [];
+    models: Array<any> = [];
 
-    constructor(private entrypointService: EntrypointService) {
-        this._getNavigationItems();
-    }
+    constructor(private schemaService: SchemaService) {}
 
+    /**
+     * Check for media size
+     *
+     * @param breakSize
+     *
+     * @returns {boolean}
+     */
     hasMedia(breakSize: string): boolean {
         return Media.hasMedia(breakSize);
     }
 
-    private _getNavigationItems(): void {
-        this.entrypointService.getEntryPoints().subscribe((items: any) => {
-            for (let key in items) {
-                this.navigationItems.push({
-                    label: key,
-                    link: items[key]
-                });
-            }
-        });
+    /**
+     * Init services
+     */
+    ngOnInit(): void {
+        this._getNavigationItems();
+    }
+
+    /**
+     * Get navigation's items
+     *
+     * @private
+     */
+    _getNavigationItems(): void {
+        this.schemaService.schema$.subscribe(schema => this.models = schema.models);
+        this.schemaService.getSchema();
     }
 }

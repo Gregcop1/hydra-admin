@@ -1,39 +1,55 @@
 import {Injectable} from 'angular2/core';
 import {Http, Response} from 'angular2/http';
-import {Observable} from 'rxjs';
-import * as _ from 'lodash';
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import 'rxjs/Observable';
+import 'rxjs/add/operator/share';
+import * as _ from 'lodash';
 import {ConfigService} from '../../services/config/config';
 
 @Injectable()
 export class EntrypointService {
 
-    _entryPointsObservable: Observable<Response>;
+    entrypoints$: Observable<any>;
+    _entrypointsObserver: any;
 
-    constructor(private _http: Http, private _config: ConfigService) {}
+    constructor(private _http: Http, private _config: ConfigService) {
+        this.entrypoints$ = new Observable(observer => this._entrypointsObserver = observer)
+            .share();
+    }
 
     /**
      * Get entrypoints of the API
-     *
-     * @returns {Observable<Response>}
      */
-    getEntryPoints(): Observable<Response> {
-        if (this._entryPointsObservable === undefined) {
-            this._entryPointsObservable = this._http.get(this._config.api.url)
-                .map((data) => this._getEntryPointsList(data.json()));
-        }
+    getEntryPoints(): void {
+        let request: string = this._config.api.url;
+        this._http.get(request)
+            .map((data) => data.json())
+            .map(this._filterEntryPoints)
+            .subscribe(
+                (datas) => this._updateEntryPointsObserver(datas),
+                (error) => console.error(`API's url is unreachable : ${request}.`, error)
+            );
+    }
 
-        return this._entryPointsObservable;
+    /**
+     * Update the entrypoints observer
+     *
+     * @param datas
+     * @private
+     */
+    _updateEntryPointsObserver(datas: Response): void {
+        if (this._entrypointsObserver) {
+            this._entrypointsObserver.next(datas);
+        }
     }
 
     /**
      * @param {any} datas
      *
-     * @returns {any}
+     * @returns {Response} datas
      * @private
      */
-    _getEntryPointsList(datas: any): any {
+    _filterEntryPoints(datas: Response): any {
         return _.omit(datas, ['@context', '@id', '@type']);
     }
 }
