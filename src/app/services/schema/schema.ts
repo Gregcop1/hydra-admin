@@ -97,7 +97,9 @@ export class SchemaService {
      * @returns {Model}
      * @private
      */
-    _populateModel(model: any): Model {
-        return new Model(model);
+    _populateModel(schema: any): Model {
+        let model: Model = new Model();
+        model.populate(schema);
+        return model;
     }
 }
