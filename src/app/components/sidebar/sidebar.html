@@ -2,8 +2,14 @@
     <md-sidenav name="left" [style]="hasMedia('sm') ? 'over' : 'side'">
         <md-content layout-padding>
             <ul class="model-navigation">
-                <li *ngFor="#model of models" class="model-navigation__item">
-                    <a href="#" class="model-navigation__link">{{model.title}}</a>
+                <li *ngFor="#model of models"
+                    class="model-navigation__item">
+                    <a
+                            [routerLink]="model.link"
+                            (click)="switch(model)"
+                            class="model-navigation__link"
+                            [ngClass]="{'model-navigation__item--active': currentModel === model}"
+                    >{{model.title}}</a>
                 </li>
             </ul>
         </md-content>
