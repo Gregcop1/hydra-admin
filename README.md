@@ -1,6 +1,9 @@
 Hydra-admin
 -----------
 
+[![Travis Status](https://travis-ci.org/Gregcop1/hydra-admin.svg?branch=master)](https://travis-ci.org/Gregcop1/hydra-admin)
+[![Coverage Status](https://coveralls.io/repos/github/Gregcop1/hydra-admin/badge.svg?branch=master)](https://coveralls.io/github/Gregcop1/hydra-admin?branch=master)
+
 ## Description
 The main goal of this project is to provide a self-generated backoffice which take advantage of the context describe 
   in Hypermedia API. This backoffice should be easy to override via simple configuration variables but must have a good 
