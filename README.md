@@ -1,8 +1,9 @@
 Hydra-admin
 -----------
 
-[![Travis Status](https://travis-ci.org/Gregcop1/hydra-admin.svg?branch=master)](https://travis-ci.org/Gregcop1/hydra-admin)
-[![Coverage Status](https://coveralls.io/repos/github/Gregcop1/hydra-admin/badge.svg?branch=master)](https://coveralls.io/github/Gregcop1/hydra-admin?branch=master)
+[![Build Status](https://travis-ci.org/Gregcop1/hydra-admin.svg?branch=master)](https://travis-ci.org/Gregcop1/hydra-admin)
+[![Test Coverage](https://codeclimate.com/github/Gregcop1/hydra-admin/badges/coverage.svg)](https://codeclimate.com/github/Gregcop1/hydra-admin/coverage)
+[![Issue Count](https://codeclimate.com/github/Gregcop1/hydra-admin/badges/issue_count.svg)](https://codeclimate.com/github/Gregcop1/hydra-admin)
 
 ## Description
 The main goal of this project is to provide a self-generated backoffice which take advantage of the context describe 
