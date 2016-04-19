@@ -17,7 +17,7 @@ export const DEBUG = argv['debug'] || false;
 export const DOCS_PORT = argv['docs-port'] || 4003;
 export const APP_BASE = argv['base'] || '/';
 
-export const ENABLE_HOT_LOADING = !!argv['hot-loader'];
+export const ENABLE_HOT_LOADING = false;
 export const HOT_LOADER_PORT = 5578;
 
 export const BOOTSTRAP_MODULE = ENABLE_HOT_LOADING ? 'hot_loader_main' : 'main';
