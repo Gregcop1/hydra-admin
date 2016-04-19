@@ -12,7 +12,7 @@ export class SideBarCmp implements OnInit {
 
     models: Array<any> = [];
 
-    constructor(private schemaService: SchemaService) {}
+    constructor(private schemaService: SchemaService, private _media: Media) {}
 
     /**
      * Check for media size
@@ -22,7 +22,7 @@ export class SideBarCmp implements OnInit {
      * @returns {boolean}
      */
     hasMedia(breakSize: string): boolean {
-        return Media.hasMedia(breakSize);
+        return this._media.hasMedia(breakSize);
     }
 
     /**

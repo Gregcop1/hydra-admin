@@ -11,13 +11,13 @@ export class HeaderCmp implements OnInit {
 
     title: string;
 
-    constructor(private _sidenav: SidenavService, private _schema: SchemaService) {}
+    constructor(private _sidenav: SidenavService, private _schema: SchemaService, private _media: Media) {}
 
     /**
      * Toggle display of the sideNav depending on the size of the screen
      */
     toggleSideBarDisplay(): void {
-        if (Media.hasMedia('sm')) {
+        if (this._media.hasMedia('sm')) {
             let sideNav = this._sidenav.find('left');
             if (sideNav.visible) {
                 sideNav.hide();
