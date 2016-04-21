@@ -8,9 +8,10 @@ engines:
     enabled: true
 ratings:
   paths:
-  - "**.ts"
+  - "**.js"
 exclude_paths:
   - coverage
-  - dist
   - node_modules
+  - test
+  - tools
   - typings
