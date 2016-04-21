@@ -3,7 +3,7 @@ Hydra-admin
 
 [![Build Status](https://travis-ci.org/Gregcop1/hydra-admin.svg?branch=master)](https://travis-ci.org/Gregcop1/hydra-admin)
 [![Code Climate](https://codeclimate.com/github/Gregcop1/hydra-admin/badges/gpa.svg)](https://codeclimate.com/github/Gregcop1/hydra-admin)
-[![Test Coverage](https://codeclimate.com/github/Gregcop1/hydra-admin/badges/coverage.svg)](https://codeclimate.com/github/Gregcop1/hydra-admin/coverage)
+[![Coverage Status](https://coveralls.io/repos/github/Gregcop1/hydra-admin/badge.svg?branch=master)](https://coveralls.io/github/Gregcop1/hydra-admin?branch=master)
 [![Issue Count](https://codeclimate.com/github/Gregcop1/hydra-admin/badges/issue_count.svg)](https://codeclimate.com/github/Gregcop1/hydra-admin)
 
 ## Description
