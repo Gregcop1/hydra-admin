@@ -5,8 +5,10 @@ export class Property {
     public readable: boolean;
     public writable: boolean;
 
-    constructor(datas: any = {}) {
-        if(datas) {
+    populate(datas: any = {}) {
+        if (!datas) {
+            console.error('Wrong parameter: you should set datas to populate Property model, none give.');
+        } else {
             this.label = datas['hydra:title'];
             this.type = datas['hydra:property']['@type'];
             this.required = datas['hydra:required'];
