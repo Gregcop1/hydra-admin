@@ -1,35 +1,53 @@
-import { it,
-    describe,
-    expect,
-    beforeEach
+import {
+  it,
+  describe,
+  expect,
 } from 'angular2/testing';
-import {Property} from './Property';
+import {Property} from '../models/Property';
 
 export function main() {
 
-    describe('Property model', () => {
-        let schema: any,
-            property: Property;
+  describe('Property model', () => {
 
-        beforeEach(() => {
-            schema = {
-                'hydra:title': 'firstName',
-                'hydra:property': {'@type': 'text'},
-                'hydra:required': true,
-                'hydra:readable': true,
-                'hydra:writable': true
-            };
-            property = new Property();
+    describe('#constructor', () => {
+
+      it('should set properties', () => {
+        let property = new Property({
+          'hydra:title': 'firstName',
+          'hydra:property': {'@type': 'rdf:Property'},
+          'hydra:range': 'xmls:string',
+          'hydra:required': true,
+          'hydra:readable': true,
+          'hydra:writable': true
         });
 
-        it('should populate the property with right datas', () => {
-            property.populate(schema);
+        expect(property.label).toBe('firstName');
+        expect(property.type).toBe('rdf:Property');
+        expect(property.range).toBe('xmls:string');
+        expect(property.required).toBeTruthy();
+        expect(property.readable).toBeTruthy();
+        expect(property.writable).toBeTruthy();
+      });
 
-            expect(property.label).toEqual('firstName');
-            expect(property.type).toEqual('text');
-            expect(property.required).toBeTruthy();
-            expect(property.readable).toBeTruthy();
-            expect(property.writable).toBeTruthy();
+      it('should set default values', () => {
+        let property = new Property({
+          'hydra:title': undefined,
+          'hydra:property': undefined,
+          'hydra:range': undefined,
+          'hydra:required': undefined,
+          'hydra:readable': undefined,
+          'hydra:writable': undefined
         });
+
+        expect(property.label).toBe('');
+        expect(property.type).toBe('');
+        expect(property.range).toBe('');
+        expect(property.required).toBeFalsy();
+        expect(property.readable).toBeFalsy();
+        expect(property.writable).toBeFalsy();
+      });
+
     });
+
+  });
 };

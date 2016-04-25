@@ -1,105 +1,163 @@
 import {Injectable} from 'angular2/core';
-import {Http, Response} from 'angular2/http';
+import {Http} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
+import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/last';
 import * as _ from 'lodash';
-import {ConfigService} from '../../services/config/config';
-import {Model} from '../models/Model';
+import {ConfigService} from '../config/config';
+import {entrypointHelper} from '../../helper/entrypointHelper';
+import {schemaHelper} from '../../helper/schemaHelper';
+import {EntryPoint} from '../models/EntryPoint';
+import {stringHelper} from '../../helper/stringHelper';
 
 @Injectable()
 export class SchemaService {
 
-    schema$: Observable<any>;
-    _schemaObserver: any;
-    _schema: any;
+  schema$: BehaviorSubject<any>;
+  entrypoints$: BehaviorSubject<Array<EntryPoint>>;
+  _entrypoints: Array<EntryPoint> = [];
 
-    constructor(private _http: Http, private _config: ConfigService) {
-        this.schema$ = new Observable(observer => this._schemaObserver = observer )
-            .share();
+  constructor(private _http: Http, private _config: ConfigService) {
+    this.schema$ = new BehaviorSubject(null);
+    this.entrypoints$ = new BehaviorSubject([]);
+  }
 
-        this._schema = {
-            title: {},
-            models: []
+  /**
+   * load API description
+   */
+  load() {
+    this._loadRoot();
+    this._loadDocumentation();
+  }
+
+  /**
+   * load available entrypoints from API's root
+   * @private
+   */
+  _loadRoot() {
+    let request: string = this._config.api.url;
+    let entrypoints = this._http.get(request)
+      .map(data => data.json())
+      .map(entrypointHelper.filterEntryPoints);
+
+    entrypoints.subscribe(
+      (entrypoints => {
+        _.forEach(_.keys(entrypoints), (key) => {
+          let cleanModel = stringHelper.toCamelCase(entrypointHelper.getModelById(key)),
+            entrypoint: EntryPoint = entrypointHelper.getEntryPointByModel(key, this._entrypoints);
+
+          if (undefined === entrypoint) {
+            entrypoint = new EntryPoint(cleanModel);
+            this._entrypoints.push(entrypoint);
+          }
+
+          entrypoint.url = entrypoints[key];
+        });
+        this.entrypoints$.next(this._entrypoints);
+      }),
+      () => {
+        throw new Error(`API's url is unreachable: ${request}.`);
+      }
+    );
+  }
+
+  /**
+   * load documentation about the API
+   */
+  _loadDocumentation() {
+    let request = [this._config.api.url, 'apidoc'].join('/'),
+      apidoc$ = this._http.get(request)
+        .map(data => data.json())
+        .share();
+
+    apidoc$.subscribe(
+      null,
+      () => {
+        throw new Error(`API's url is unreachable: ${request}.`);
+      }
+    );
+
+    let api = apidoc$.map(data => data['hydra:supportedClass'])
+      .map(entrypointHelper.filterSupportedClass)
+      .switchMap(results => results);
+
+    this._loadCollectionOperations(api);
+    this._loadSingleOperations(api);
+    this._loadSchema(apidoc$);
+
+  }
+
+  /**
+   * Load collection operations
+   *
+   * @param {Observable<any>} api
+   * @param {string} request
+   * @private
+   */
+  _loadCollectionOperations(api: Observable<any>) {
+    api.filter(item => item['@id'] === '#Entrypoint')
+      .map(entrypoints => entrypoints['hydra:supportedProperty'])
+      .switchMap(entrypoint => entrypoint)
+      .map(entrypoint => entrypoint['hydra:property'])
+      .subscribe(
+        (entrypoint => {
+          let cleanModel = stringHelper.toCamelCase(entrypointHelper.getModelById(entrypoint['@id'])),
+            ep: EntryPoint = entrypointHelper.getEntryPointByModel(cleanModel, this._entrypoints);
+
+          if (undefined === ep) {
+            ep = new EntryPoint(cleanModel);
+            this._entrypoints.push(ep);
+          }
+
+          let operations: Array<string> = entrypointHelper.getOperations(entrypoint['hydra:supportedOperation']);
+          ep.addOperations(operations);
+
+          this.entrypoints$.next(this._entrypoints);
+        })
+      );
+  }
+
+  /**
+   * Load single operations
+   *
+   * @param {Observable<any>} api
+   * @param {string} request
+   * @private
+   */
+  _loadSingleOperations(api: Observable<any>) {
+    api.filter(item => item['@id'] !== '#Entrypoint')
+      .subscribe(
+        (entrypoint => {
+          let cleanModel = stringHelper.toCamelCase(entrypointHelper.getModelById(entrypoint['hydra:title'])),
+            ep: EntryPoint = entrypointHelper.getEntryPointByModel(cleanModel, this._entrypoints),
+            operations: Array<string> = entrypointHelper.getOperations(entrypoint['hydra:supportedOperation']);
+
+          if (undefined === ep) {
+            ep = new EntryPoint(cleanModel);
+            this._entrypoints.push(ep);
+          }
+
+          ep.addOperations(operations);
+
+          this.entrypoints$.next(this._entrypoints);
+        })
+      );
+  }
+
+  /**
+   * Load schema of the API
+   */
+  _loadSchema(apidoc$: Observable<string>): void {
+    apidoc$
+      .map(data => {
+        return {
+          title: schemaHelper.getSchemaTitle(data),
+          models: schemaHelper.populateModels(data)
         };
-    }
-
-    /**
-     * Get schema of the API
-     */
-    getSchema(): void {
-        let request: string = [this._config.api.url, 'apidoc'].join('/');
-        this._http.get(request)
-            .map((data) => data.json())
-            .subscribe(
-                (datas) => this._updateSchemaObserver(datas),
-                (error) => console.error(`Could not reach API for request: ${request}.`, error)
-            );
-    }
-
-    /**
-     * Update schema's observer
-     *
-     * @param datas
-     * @private
-     */
-    _updateSchemaObserver(datas: Response): void {
-        // update the store
-        this._schema.title = this._getSchemaTitle(datas);
-        this._schema.models = this._populateModels(datas);
-        // push data to subscribers
-        if (this._schemaObserver) {
-            this._schemaObserver.next(this._schema);
-        }
-    }
-
-    /**
-     * Get the title of the schema
-     *
-     * @param {Response} datas
-     *
-     * @returns {string}
-     * @private
-     */
-    _getSchemaTitle(datas: any): string {
-        return datas['hydra:title'];
-    }
-
-    /**
-     * Populate models from the schema
-     *
-     * @param {Response} datas
-     *
-     * @returns {Array}
-     * @private
-     */
-    _populateModels(datas: Response): Array<Model> {
-        return _.map(this._cleanModelsList(datas['hydra:supportedClass']), this._populateModel);
-    }
-
-    /**
-     * Clean the list of model from polluted datas
-     *
-     * @param supportedClasses
-     *
-     * @returns {Array<any>}
-     * @private
-     */
-    _cleanModelsList(supportedClasses: Array<any>): Array<any> {
-        return supportedClasses.slice(0, -3);
-    }
-
-    /**
-     * Transform datas from the schema unti valid Model
-     *
-     * @param {any} model
-     *
-     * @returns {Model}
-     * @private
-     */
-    _populateModel(schema: any): Model {
-        let model: Model = new Model();
-        model.populate(schema);
-        return model;
-    }
+      })
+      .subscribe(schema => this.schema$.next(schema));
+  }
 }

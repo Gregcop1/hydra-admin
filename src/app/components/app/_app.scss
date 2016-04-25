@@ -1,5 +1,13 @@
 .main-content {
   display: block;
-  background-color: white;
+  background-color: md-color($md-background, 100);
   @include md-stacking-context();
+}
+
+.app-content {
+  padding: 80px 0;
+  width: 640px;
+  max-width: 90%;
+  min-height: 640px;
+  background-color: transparent;
 }

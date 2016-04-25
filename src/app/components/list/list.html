@@ -1,0 +1,19 @@
+<div *ngIf="!loading">
+  <h1>List of {{ model.title}}</h1>
+
+  <md-card>
+    <md-data-table layout-fill [selectable]="true" class="mdl-shadow--2dp">
+      <thead>
+      <tr md-data-table-header-selectable-row>
+        <th *ngFor="#property of model.properties">{{ property.label }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="#entity of collection?.members"
+          md-data-table-selectable-row>
+        <td *ngFor="#property of model.properties">{{ entity | property:property }}</td>
+      </tr>
+      </tbody>
+    </md-data-table>
+  </md-card>
+</div>
