@@ -29,6 +29,7 @@ The backoffice should respect some rules:
 ### Requirements
 - Git
 - NPM (we don't use leftpad so everything should be fine ;))
+- An Hypermedia API (Have you ever heard of [API Platform][api-platform]?)
 
 ### Installation
 
@@ -60,8 +61,14 @@ each level of contribution may help (documentation, hotfix, compatibility, big f
 
 ## FAQ
 
+### I want to test this awesome tool but I don't have any Hypermedia API. Do you have some advice for me?
+
+Yes, of course. Have you ever heard of [API Platform][api-platform]? This solution helps you to build complex API, compatible with [schema.org][schema]
+in a few minutes without being a monster in PHP, Java or any languages. Just some configuration steps.
 
 [angular2-seed]: https://github.com/mgechev/angular2-seed
 [material-design]: https://www.google.com/design/spec/material-design/introduction.html
+[api-platform]: https://api-platform.com/
+[schema]: https://schema.org/
 [guidelines]: /GUIDELINES.md
 [contribute]: /CONTRIBUTING.md
