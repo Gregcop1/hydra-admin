@@ -4,11 +4,16 @@
     <div style="display: block; position: relative;">
       <div layout="row">
         <sidebar></sidebar>
-        <md-content flex layout-padding>
-          <div layout="column" layout-fill layout-align="top center">
-            <router-outlet></router-outlet>
-          </div>
-        </md-content>
+
+        <section layout="column" layout-align="start center" flex>
+          <md-content class="app-content" flex layout-padding>
+            <div layout="column" layout-fill layout-align="top center">
+
+              <router-outlet></router-outlet>
+
+            </div>
+          </md-content>
+        </section>
       </div>
     </div>
   </div>

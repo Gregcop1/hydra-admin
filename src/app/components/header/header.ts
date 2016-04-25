@@ -1,5 +1,8 @@
 import {Component, OnInit} from 'angular2/core';
 import {MATERIAL_DIRECTIVES, Media, SidenavService} from 'ng2-material/all';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/filter';
 import {SchemaService} from '../../services/schema/schema';
 
 @Component({
@@ -8,10 +11,9 @@ import {SchemaService} from '../../services/schema/schema';
     directives: [MATERIAL_DIRECTIVES]
 })
 export class HeaderCmp implements OnInit {
+    title: Observable<string>;
 
-    title: string;
-
-    constructor(private _sidenav: SidenavService, private _schema: SchemaService, private _media: Media) {}
+    constructor(private _sidenav: SidenavService, private _schemaService: SchemaService, private _media: Media) {}
 
     /**
      * Toggle display of the sideNav depending on the size of the screen
@@ -31,17 +33,8 @@ export class HeaderCmp implements OnInit {
      * Init services
      */
     ngOnInit(): void {
-        this._getTitle();
-    }
-
-    /**
-     * Init title
-     *
-     * @private
-     */
-    _getTitle(): void {
-        this._schema.schema$.subscribe((schema :any) => {
-            this.title = schema.title;
-        });
+        this._schemaService.schema$
+          .filter(schema => null !== schema)
+          .subscribe(schema => this.title = schema.title);
     }
 }
