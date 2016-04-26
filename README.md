@@ -1,6 +1,8 @@
 Hydra-admin
 -----------
 
+[![Join the chat at https://gitter.im/Gregcop1/hydra-admin](https://badges.gitter.im/Gregcop1/hydra-admin.svg)](https://gitter.im/Gregcop1/hydra-admin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/Gregcop1/hydra-admin.svg?branch=master)](https://travis-ci.org/Gregcop1/hydra-admin)
 [![Code Climate](https://codeclimate.com/github/Gregcop1/hydra-admin/badges/gpa.svg)](https://codeclimate.com/github/Gregcop1/hydra-admin)
 [![Coverage Status](https://coveralls.io/repos/github/Gregcop1/hydra-admin/badge.svg?branch=master)](https://coveralls.io/github/Gregcop1/hydra-admin?branch=master)
